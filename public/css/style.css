@@ -2,7 +2,7 @@ body {
     text-align: center;
    }
    .board {
-    margin: auto;
+    margin: 175px auto;
     width: 350px;
    }
    .board button {

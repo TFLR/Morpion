@@ -2,24 +2,24 @@
 <html>
   <head>
     <title>Socket.IO chat</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/bootstrap.bundle.min.js" defer></script>
   </head>
   <body>
-    <div class="board">
-      <button id="a0"></button>
-      <button id="a1"></button>
-      <button id="a2"></button>
-      <button id="b0"></button>
-      <button id="b1"></button>
-      <button id="b2"></button>
-      <button id="c0"></button>
-      <button id="c1"></button>
-      <button id="c2"></button>
-      <div id="messages">Waiting for opponent to join...</div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="#">Navbar</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+          <a class="nav-item nav-link active" href="/game">Game</a>
+          <a class="nav-item nav-link" href="#">Login</a>
+          <a class="nav-item nav-link" href="/register">Register</a>
+          
       </div>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
-    <script  src="https://code.jquery.com/jquery-1.11.1.js"></script>
-    <script src="./js/script.js" defer>
-    </script>
+      </div>
+  </nav>
   </body>
 </html>

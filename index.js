@@ -19,6 +19,14 @@ app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/register', function(req, res){
+  res.sendFile(__dirname + '/public/register.html');
+})
+
+app.get('/game', function(req, res){
+  res.sendFile(__dirname + '/public/tic-tac-toe.html');
+})
+
 
 var players = {},
   unmatched;
