@@ -10,73 +10,120 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const ejs = require('ejs');
+const {
+  MongoDriverError
+} = require('mongodb');
 const JWT_SECRET = 'azeaazeazjbhvegazjhekazaega#AZHA@ANEAZqssqd';
 const mongoDB = "mongodb://localhost:27017/SuiviProjetDev"
 
+app.use(express.json())
+
 app.set('view engine', 'ejs')
-mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true})
-    .then(() => console.log('Database Connected...'))
-    .catch(err => console.log('Error connecting database',err));
+mongoose.connect(mongoDB, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => console.log('Database Connected...'))
+  .catch(err => console.log('Error connecting database', err));
 
-http.listen(port,()=> { console.log('Connextion listen on 5000')})
+http.listen(port, () => {
+  console.log('Connextion listen on 5000')
+})
 
-app.get('/', function(req, res){
-  res.render('index');
-  
-  
+// const userSchema = [
+//   {username: 'Ok', elo: 0 },
+//   {username: 'Ok', elo: 0 },
+// ]
+const userSchema = {
+  username: String, 
+  elo: Number
+}
+ 
+const Users = mongoose.model('User', userSchema);
+
+app.get('/', function (req, res) {
+  Users.find({}, function (err, users) {
+    res.render('index', {
+      usersList : users
+    })
+  })
 });
 
-app.get('/register', function(req, res){
+app.get('/register', function (req, res) {
   res.render('register');
 })
 
-app.get('/game', function(req, res){
+app.get('/game', function (req, res) {
   res.sendFile(__dirname + '/public/tic-tac-toe.html');
 })
 
-app.get('/login', function(req, res){
+app.get('/login', function (req, res) {
   res.render('login');
 })
 
 app.use(bodyParser.json())
 
-app.post('/api/login', async(req, res) => {
-  
-  const {email, password } = req.body
+app.post('/api/login', async (req, res) => {
 
-  const user = await User.findOne({email}).lean()
+  const {
+    email,
+    password
+  } = req.body
 
-  if(!user) {
-    return res.json({status: error, error: 'Invalid email or password'})
+  const user = await User.findOne({
+    email
+  }).lean()
+
+  if (!user) {
+    return res.json({
+      status: error,
+      error: 'Invalid email or password'
+    })
   }
-  if(await bcrypt.compare(password, user.password))
-      {
-      const token = jwt.sign({ 
-        id: user._id, 
+  if (await bcrypt.compare(password, user.password)) {
+    const token = jwt.sign({
+        id: user._id,
         username: user.username
-      }, 
+      },
       JWT_SECRET
     )
-    return res.json({status: 'OK', data: token})
+    return res.json({
+      status: 'OK',
+      data: token
+    })
   }
 
 })
-app.post('/api/register', async(req, res) => {
+app.post('/api/register', async (req, res) => {
 
   console.log(req.body)
 
-  const { username, email, password: plainTextPassword, elo } = req.body
+  const {
+    username,
+    email,
+    password: plainTextPassword,
+    elo
+  } = req.body
 
-  if(!username || typeof username !== 'string') {
-    return res.json({status: error, error: 'Invalid username'})
+  if (!username || typeof username !== 'string') {
+    return res.json({
+      status: error,
+      error: 'Invalid username'
+    })
   }
 
-  if(!email || typeof email !== 'string') {
-    return res.json({status: error, error: 'Invalid email'})
+  if (!email || typeof email !== 'string') {
+    return res.json({
+      status: error,
+      error: 'Invalid email'
+    })
   }
 
-  if(!plainTextPassword || typeof plainTextPassword !== 'string') {
-    return res.json({status: error, error: 'Invalid password'})
+  if (!plainTextPassword || typeof plainTextPassword !== 'string') {
+    return res.json({
+      status: error,
+      error: 'Invalid password'
+    })
   }
 
   const password = await bcrypt.hash(plainTextPassword, 10)
@@ -88,23 +135,30 @@ app.post('/api/register', async(req, res) => {
       password,
       elo
     })
-    console.log('User created successfully:' , response)
-  } catch(error) {
-    if(error.code === 11000) {
-      return res.json({ status: 'error', error: 'Username or Email already in use ' })
+    console.log('User created successfully:', response)
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.json({
+        status: 'error',
+        error: 'Username or Email already in use '
+      })
     }
     throw error
-  
+
   }
-  res.json({ status: 'OK' })
+  res.json({
+    status: 'OK'
+  })
 })
- 
+
 var players = {},
   unmatched;
 
 io.sockets.on("connection", function (socket) {
-    console.log("socket connected")
-  socket.emit('connect',{msg:"hello"})
+  console.log("socket connected")
+  socket.emit('connect', {
+    msg: "hello"
+  })
   joinGame(socket);
 
   if (getOpponent(socket)) {
