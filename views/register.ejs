@@ -1,12 +1,8 @@
+
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Socket.IO chat</title>
-    
-    <link rel="stylesheet" href="./css/bootstrap.min.css">
-    <link rel="stylesheet" href="./css/style.css">
- 
-    <script src="./js/bootstrap.bundle.min.js" defer></script>
+        <%- include('./_partials/_head') %>
     </head>
     <body>
       <section class="vh-100" style="background-color: #eee;">
@@ -69,7 +65,7 @@
                           const username = document.getElementById('username').value
                           const email = document.getElementById('email-user').value
                           const password = document.getElementById('pwd-user').value
-                          
+                          const elo = 0
 
                           const result = await fetch('/api/register', {
                             method: 'POST',
@@ -79,7 +75,8 @@
                             body: JSON.stringify({
                                 username,
                                 email,
-                                password
+                                password,
+                                elo
                             })
                           }).then((res) => res.json())
 

@@ -18,6 +18,11 @@ const UserSchema = new mongoose.Schema({
         required: true,
       
     },
+
+    elo: {
+        type: Number,
+        
+    }
     
 },
 { collection : 'users' }

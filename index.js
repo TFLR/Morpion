@@ -9,10 +9,11 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const ejs = require('ejs');
 const JWT_SECRET = 'azeaazeazjbhvegazjhekazaega#AZHA@ANEAZqssqd';
 const mongoDB = "mongodb://localhost:27017/SuiviProjetDev"
 
-
+app.set('view engine', 'ejs')
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true})
     .then(() => console.log('Database Connected...'))
     .catch(err => console.log('Error connecting database',err));
@@ -20,11 +21,13 @@ mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true})
 http.listen(port,()=> { console.log('Connextion listen on 5000')})
 
 app.get('/', function(req, res){
-  res.sendFile(__dirname + '/index.html');
+  res.render('index');
+  
+  
 });
 
 app.get('/register', function(req, res){
-  res.sendFile(__dirname + '/public/register.html');
+  res.render('register');
 })
 
 app.get('/game', function(req, res){
@@ -32,7 +35,7 @@ app.get('/game', function(req, res){
 })
 
 app.get('/login', function(req, res){
-  res.sendFile(__dirname + '/public/login.html');
+  res.render('login');
 })
 
 app.use(bodyParser.json())
@@ -62,7 +65,7 @@ app.post('/api/register', async(req, res) => {
 
   console.log(req.body)
 
-  const { username, email, password: plainTextPassword } = req.body
+  const { username, email, password: plainTextPassword, elo } = req.body
 
   if(!username || typeof username !== 'string') {
     return res.json({status: error, error: 'Invalid username'})
@@ -76,17 +79,14 @@ app.post('/api/register', async(req, res) => {
     return res.json({status: error, error: 'Invalid password'})
   }
 
-  if(plainTextPassword.length < 6) {
-    return res.json({status: error, error: 'Password should be at least 6 characters'})
-  }
-
   const password = await bcrypt.hash(plainTextPassword, 10)
 
   try {
     const response = await User.create({
       username,
       email,
-      password
+      password,
+      elo
     })
     console.log('User created successfully:' , response)
   } catch(error) {
@@ -99,6 +99,9 @@ app.post('/api/register', async(req, res) => {
   res.json({ status: 'OK' })
 })
  
+var players = {},
+  unmatched;
+
 io.sockets.on("connection", function (socket) {
     console.log("socket connected")
   socket.emit('connect',{msg:"hello"})

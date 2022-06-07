@@ -69,6 +69,7 @@
 
                           if(result.status === 'OK') {
                             console.log('Got the token: ', result.data)
+                            window.location.replace("/");
                             alert('Success')
                           } else {
                             alert(result.error)
