@@ -1,25 +1,19 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-    <head>
-      <%- include('./_partials/_head') %>
-    </head>
+  <head>
+    <%- include('./_partials/_head') %>
+  </head>
   <body>
-    
-    <header>
-      <%- include('./_partials/_navbar') %>
-    </header>
-   
+    <header><%- include('./_partials/_navbar') %></header>
+
     <% usersList.forEach((user)=> { %>
-      <li>
-          <h2> <%= user.username %> : <%= user.elo %> POINTS</h2> 
-  
-      </li>
+    <li>
+      <h2><%= user.username %> : <%= user.elo %> POINTS</h2>
+    </li>
 
-     
-
-     
     <% }) %>
- 
-   
+
+    <a href="/game">Multiplayer</a>
+    <a href="/bot">Bot</a>
   </body>
 </html>
