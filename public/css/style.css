@@ -1,17 +1,53 @@
 body {
     text-align: center;
-   }
-   .board {
+    color: white;
+    background-image: url("../images/mur.png");
+    font-family: 'Lexend Deca', sans-serif;
+}
+
+.board {
+
     margin: 175px auto;
     width: 350px;
-   }
-   .board button {
+    background-color: rgba(4, 18, 59, 1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.board div {
+    margin-top: 10px;
+    margin-left: 10px;
+}
+.board button {
     height: 100px;
     width: 100px;
-    margin: 0px;
     padding: 0px;
-    float: left;
     margin-right: 10px;
     margin-bottom: 10px;
-    font-size: 3em
-   }
+    font-size: 3em;
+}
+
+
+.vh-100 {
+    background-image: url("../images/mur.png");
+    background-repeat: none;
+    background-size: cover;
+    font-family: 'Lexend Deca', sans-serif;
+}
+
+
+
+.form-control {
+    border-radius: 2em;
+}
+
+.messages {
+    font-size: 25px;
+}
+
+img {
+    height: 20px;
+    color: white;
+}
