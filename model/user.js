@@ -19,10 +19,21 @@ const UserSchema = new mongoose.Schema({
       
     },
 
-    elo: {
+    victoires: {
+        type: Number,
+        
+    },
+
+    defaites: {
+        type: Number,
+        
+    },
+    
+    nulles: {
         type: Number,
         
     }
+
     
 },
 { collection : 'users' }

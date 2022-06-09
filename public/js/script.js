@@ -47,6 +47,7 @@ $(function () {
   socket.on("opponent.left", function () {
     $("#messages").text("Your opponent left the game.");
     $(".board button").attr("disabled", true);
+    
   });
 });
 

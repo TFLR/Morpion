@@ -13,10 +13,12 @@ const ejs = require('ejs');
 const {
   MongoDriverError
 } = require('mongodb');
+const cookieParser = require('cookie-parser');
 const JWT_SECRET = 'azeaazeazjbhvegazjhekazaega#AZHA@ANEAZqssqd';
 const mongoDB = "mongodb://localhost:27017/SuiviProjetDev"
 
 app.use(express.json())
+app.use(express.static(__dirname + '/public'))
 
 app.set('view engine', 'ejs')
 mongoose.connect(mongoDB, {
@@ -36,8 +38,14 @@ http.listen(port, () => {
 // ]
 const userSchema = {
   username: String, 
-  elo: Number
+  victoires: Number,
+  defaites: Number,
+  nulles: Number
 }
+
+
+
+
  
 const Users = mongoose.model('User', userSchema);
 
@@ -102,7 +110,9 @@ app.post('/api/register', async (req, res) => {
     username,
     email,
     password: plainTextPassword,
-    elo
+    victoires,
+    defaites,
+    nulles
   } = req.body
 
   if (!username || typeof username !== 'string') {
@@ -133,7 +143,9 @@ app.post('/api/register', async (req, res) => {
       username,
       email,
       password,
-      elo
+      victoires,
+      defaites,
+      nulles
     })
     console.log('User created successfully:', response)
   } catch (error) {

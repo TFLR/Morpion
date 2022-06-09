@@ -2,7 +2,14 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <%- include('./_partials/_head') %>
+        <meta charset="UTF-8">
+        <title>Morpion</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="../public/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../public/css/style.css">
+    
+        <script src="../public/js/bootstrap.bundle.min.js" defer></script>
     </head>
     <body>
       <section class="vh-100" style="background-color: #eee;">
@@ -65,9 +72,7 @@
                           const username = document.getElementById('username').value
                           const email = document.getElementById('email-user').value
                           const password = document.getElementById('pwd-user').value
-                          const victoires = 0
-                          const defaites = 0
-                          const nulles = 0
+                          const elo = 0
 
                           const result = await fetch('/api/register', {
                             method: 'POST',
@@ -78,9 +83,7 @@
                                 username,
                                 email,
                                 password,
-                                victoires,
-                                defaites,
-                                nulles
+                                elo
                             })
                           }).then((res) => res.json())
 
