@@ -64,6 +64,9 @@ app.get('/register', function (req, res) {
 app.get('/game', function (req, res) {
   res.sendFile(__dirname + '/public/tic-tac-toe.html');
 })
+app.get('/bot', function (req, res) {
+  res.sendFile(__dirname + '/public/bot.html');
+})
 
 app.get('/login', function (req, res) {
   res.render('login');
