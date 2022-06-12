@@ -9,7 +9,7 @@ var io = require('socket.io')(http);
 const cookieParser = require('cookie-parser');
 const authUtils = require('./utils/auth');
 const authRouter = require('./routes/auth');
-const morpionRouter = require('./routes/morpion');
+
 const MongoClient = require('mongodb').MongoClient;
 const passport = require('passport');
 const Strategy = require('passport-local').Strategy;
