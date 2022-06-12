@@ -14,6 +14,8 @@
 </head>
 
 <body>
+    {{#loggedIn}}
+
     <section>
         
         <div class="welcome-page">
@@ -38,10 +40,31 @@
             </div>
         </div>
     </section>
-    <script>
-        const result = 
-        console.log()
-    </script>
+
+    {{/loggedIn}}
+    <section>
+        
+        <div class="welcome-page">
+            <div class="backage">
+                <h2>Tic-Tac-Toe</h2>
+                <div class="bas">
+                    <div class="allbutton">
+                        <a href="/auth/login"> 
+                            Versus BOT
+                           <img src="../images/menu/robot.svg" alt="robot">
+                        </a>
+                        <a href="/auth/register"> 
+                            Versus Players
+                           <img src="../images/menu/players.svg" alt="robot">
+                        </a>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    
 
 </body>
 

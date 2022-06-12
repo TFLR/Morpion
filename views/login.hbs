@@ -1,4 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+   
+    <meta charset="UTF-8">
+  <title>Morpion</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+  
+  
 
+  <script src="../js/bootstrap.bundle.min.js" defer></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500&display=swap');
+  </style>
+  </head>
+<body>
   <section class="vh-100" style="background-color: #eee;">
     <div class="container h-100">
       <div class="row d-flex justify-content-center align-items-center h-100">
@@ -9,34 +27,50 @@
                 <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
 
                   <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
+                  {{> messages }}
+                  <form action="/auth/login" method="POST" id="login">
 
-                  <form class="mx-1 mx-md-4" id="login">
-
-                    <div class="form-group">
-                      <div class="d-flex flex-row align-items-center mb-4">
-                        <i class="fas fa-user fa-lg me-3 fa-fw"></i>
-                        <div class="form-outline flex-fill mb-0">
-                          <label class="form-label" for="username">Your Name</label>
-                          <input type="text" id="username" class="form-control" />
-
-                        </div>
+                  <div class="form-group">
+                    <div class="d-flex flex-row align-items-center mb-4">
+                      <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                      <div class="form-outline flex-fill mb-0">
+                        <label class="form-label" for="nameof">Your Name</label>
+                        <input type="text" name="nameof" id="nameof" class="form-control"/>
+ 
                       </div>
                     </div>
+                  </div>
 
+                  <div class="form-group">
                     <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                       <div class="form-outline flex-fill mb-0">
-                        <label class="form-label" for="pwd-user">Password</label>
-                        <input type="password" id="pwd-user" class="form-control" />
+                        <label class="form-label" for="passwordof">Password</label>
+                        <input type="password" name="passwordof" id="passwordof" class="form-control"/>
                       </div>
                     </div>
+                  </div>
 
-                    <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                      <input type="submit" value="Login">
-                    </div>
+                   <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                    <input type="submit" value="Register">
+                  </div>
+
 
                   </form>
+                  <script>
+                  const form = document.getElementById('login')
+                  const username = document.getElementById('nameof');
+                   
+                    const password = document.getElementById('passwordof');
+                  
+                 
+                  function registerUser(event) {
+                    
+                    
+                  }
 
+                   form.addEventListener('submit', registerUser)
+                </script>
                 </div>
 
               </div>
@@ -46,3 +80,6 @@
       </div>
     </div>
   </section>
+
+    </body>
+</html>

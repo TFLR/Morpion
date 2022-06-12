@@ -1,3 +1,4 @@
+var createError = require('http-errors');
 var express = require('express')
 var app = express()
 app.use(express.static('public'))
@@ -5,20 +6,23 @@ var path = require('path');
 const port = process.env.PORT || 5000
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const cookieParser = require('cookie-parser');
+const authUtils = require('./utils/auth');
 const authRouter = require('./routes/auth');
+const morpionRouter = require('./routes/morpion');
 const MongoClient = require('mongodb').MongoClient;
 const passport = require('passport');
 const Strategy = require('passport-local').Strategy;
 const session = require('express-session');
 const flash = require('connect-flash');
 const hbs = require('hbs');
-const mongoDB = "mongodb://localhost:27017/SuiviProjetDev"
+var logger = require('morgan');
+var indexRouter = require('./routes/index');
+
 
 app.use(express.json())
 app.use(express.static(__dirname + '/public'))
+
 app.use(session({
   secret: 'secret session',
   resave: false,
@@ -34,16 +38,12 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(logger('dev'));
+app.use(cookieParser());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs')
-
+app.use(express.urlencoded({ extended: false }));
 hbs.registerPartials(path.join(__dirname, 'views/_partials'));
-
-mongoose.connect(mongoDB, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
-  
 
 http.listen(port, () => {
   console.log('Connextion listen on 5000')
@@ -52,7 +52,6 @@ http.listen(port, () => {
 MongoClient.connect('mongodb://localhost:27017', (err, client) => {
   if(err) {
     throw err;
-
     
   }
   console.log('Database Connected...');
@@ -62,8 +61,9 @@ MongoClient.connect('mongodb://localhost:27017', (err, client) => {
 })
 
 passport.use(new Strategy(
-  (username, password, done) => {
-    app.locals.users.findOne({ username }, (err, user) => {
+  (nameof, passwordof, done) => {
+
+    app.locals.users.findOne({ nameof }, (err, user) => {
       if(err) {
         return done(err);
       }
@@ -72,7 +72,7 @@ passport.use(new Strategy(
         return done(null, false);
       }
 
-      if( bcrypt.compare(password, user.password)) {
+      if(user.password != authUtils.hashPassword(passwordof)) {
         return done(null, false);
       }
 
@@ -90,23 +90,20 @@ passport.deserializeUser((id, done) => {
 done(null, { id });
 });
 
-
-app.get('/', function (req, res) {
- 
-    res.render('index')
- 
-});
-
-app.get('/game', function (req, res) {
-  res.sendFile(__dirname + '/public/tic-tac-toe.html');
-})
-app.get('/bot', function (req, res) {
-  res.sendFile(__dirname + '/public/bot.html');
-})
+app.use('/', indexRouter);
 
 app.use('/auth', authRouter);
 
-app.use(bodyParser.json());
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
 
 
 var players = {},
@@ -166,3 +163,5 @@ function getOpponent(socket) {
   }
   return players[players[socket.id].opponent].socket;
 }
+
+module.exports = app;
