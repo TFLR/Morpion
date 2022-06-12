@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+   
+    <meta charset="UTF-8">
+  <title>Morpion</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+
+  <script src="../js/bootstrap.bundle.min.js" defer></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500&display=swap');
+  </style>
+  </head>
+  <body>
+    {{#loggedIn}}
+    <p class="text-right">
+      <a href="/auth/logout">Logout</a>
+    </p>
+    {{/loggedIn}}
+    <div class="container">
+      {{{body}}}
+    </div>
+  </body>
+</html>

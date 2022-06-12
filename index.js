@@ -1,65 +1,101 @@
 var express = require('express')
 var app = express()
 app.use(express.static('public'))
+var path = require('path');
 const port = process.env.PORT || 5000
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
-const User = require('./model/user')
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const ejs = require('ejs');
-const {
-  MongoDriverError
-} = require('mongodb');
-const cookieParser = require('cookie-parser');
-const JWT_SECRET = 'azeaazeazjbhvegazjhekazaega#AZHA@ANEAZqssqd';
+const authRouter = require('./routes/auth');
+const MongoClient = require('mongodb').MongoClient;
+const passport = require('passport');
+const Strategy = require('passport-local').Strategy;
+const session = require('express-session');
+const flash = require('connect-flash');
+const hbs = require('hbs');
 const mongoDB = "mongodb://localhost:27017/SuiviProjetDev"
 
 app.use(express.json())
 app.use(express.static(__dirname + '/public'))
+app.use(session({
+  secret: 'secret session',
+  resave: false,
+  saveUninitialized: false
+}));
 
-app.set('view engine', 'ejs')
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+
+app.use((req, res, next) => {
+  res.locals.loggedIn = req.isAuthenticated();
+  next();
+});
+
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'hbs')
+
+hbs.registerPartials(path.join(__dirname, 'views/_partials'));
+
 mongoose.connect(mongoDB, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
-  .then(() => console.log('Database Connected...'))
-  .catch(err => console.log('Error connecting database', err));
+  
 
 http.listen(port, () => {
   console.log('Connextion listen on 5000')
 })
 
-// const userSchema = [
-//   {username: 'Ok', elo: 0 },
-//   {username: 'Ok', elo: 0 },
-// ]
-const userSchema = {
-  username: String, 
-  victoires: Number,
-  defaites: Number,
-  nulles: Number
-}
+MongoClient.connect('mongodb://localhost:27017', (err, client) => {
+  if(err) {
+    throw err;
 
+    
+  }
+  console.log('Database Connected...');
+  const db = client.db('SuiviProjetDev');
+  const users = db.collection('users');
+  app.locals.users = users;
+})
 
+passport.use(new Strategy(
+  (username, password, done) => {
+    app.locals.users.findOne({ username }, (err, user) => {
+      if(err) {
+        return done(err);
+      }
 
+      if(!user) {
+        return done(null, false);
+      }
 
- 
-const Users = mongoose.model('User', userSchema);
+      if( bcrypt.compare(password, user.password)) {
+        return done(null, false);
+      }
 
-app.get('/', function (req, res) {
-  Users.find({}, function (err, users) {
-    res.render('index', {
-      usersList : users
+      return done(null, user);
     })
-  })
+  }
+));
+
+passport.serializeUser((user, done) => {
+  done(null, user._id);
+
 });
 
-app.get('/register', function (req, res) {
-  res.render('register');
-})
+passport.deserializeUser((id, done) => {
+done(null, { id });
+});
+
+
+app.get('/', function (req, res) {
+ 
+    res.render('index')
+ 
+});
 
 app.get('/game', function (req, res) {
   res.sendFile(__dirname + '/public/tic-tac-toe.html');
@@ -68,103 +104,10 @@ app.get('/bot', function (req, res) {
   res.sendFile(__dirname + '/public/bot.html');
 })
 
-app.get('/login', function (req, res) {
-  res.render('login');
-})
+app.use('/auth', authRouter);
 
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
-app.post('/api/login', async (req, res) => {
-
-  const {
-    email,
-    password
-  } = req.body
-
-  const user = await User.findOne({
-    email
-  }).lean()
-
-  if (!user) {
-    return res.json({
-      status: error,
-      error: 'Invalid email or password'
-    })
-  }
-  if (await bcrypt.compare(password, user.password)) {
-    const token = jwt.sign({
-        id: user._id,
-        username: user.username
-      },
-      JWT_SECRET
-    )
-    return res.json({
-      status: 'OK',
-      data: token
-    })
-  }
-
-})
-app.post('/api/register', async (req, res) => {
-
-  console.log(req.body)
-
-  const {
-    username,
-    email,
-    password: plainTextPassword,
-    victoires,
-    defaites,
-    nulles
-  } = req.body
-
-  if (!username || typeof username !== 'string') {
-    return res.json({
-      status: error,
-      error: 'Invalid username'
-    })
-  }
-
-  if (!email || typeof email !== 'string') {
-    return res.json({
-      status: error,
-      error: 'Invalid email'
-    })
-  }
-
-  if (!plainTextPassword || typeof plainTextPassword !== 'string') {
-    return res.json({
-      status: error,
-      error: 'Invalid password'
-    })
-  }
-
-  const password = await bcrypt.hash(plainTextPassword, 10)
-
-  try {
-    const response = await User.create({
-      username,
-      email,
-      password,
-      victoires,
-      defaites,
-      nulles
-    })
-    console.log('User created successfully:', response)
-  } catch (error) {
-    if (error.code === 11000) {
-      return res.json({
-        status: 'error',
-        error: 'Username or Email already in use '
-      })
-    }
-    throw error
-
-  }
-  res.json({
-    status: 'OK'
-  })
-})
 
 var players = {},
   unmatched;
