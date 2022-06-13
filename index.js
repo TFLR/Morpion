@@ -3,6 +3,7 @@ var express = require('express')
 var app = express()
 app.use(express.static('public'))
 var path = require('path');
+const bodyParser = require("body-parser");
 const port = process.env.PORT || 5000
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
@@ -22,6 +23,8 @@ var indexRouter = require('./routes/index');
 
 app.use(express.json())
 app.use(express.static(__dirname + '/public'))
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.use(session({
   secret: 'secret session',
@@ -39,9 +42,10 @@ app.use((req, res, next) => {
 });
 
 app.use(logger('dev'));
-app.use(cookieParser());
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs')
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 hbs.registerPartials(path.join(__dirname, 'views/_partials'));
 
@@ -61,9 +65,9 @@ MongoClient.connect('mongodb://localhost:27017', (err, client) => {
 })
 
 passport.use(new Strategy(
-  (nameof, passwordof, done) => {
+  (username, password, done) => {
 
-    app.locals.users.findOne({ nameof }, (err, user) => {
+    app.locals.users.findOne({ username }, (err, user) => {
       if(err) {
         return done(err);
       }
@@ -72,7 +76,7 @@ passport.use(new Strategy(
         return done(null, false);
       }
 
-      if(user.password != authUtils.hashPassword(passwordof)) {
+      if(user.password != authUtils.hashPassword(password )) {
         return done(null, false);
       }
 

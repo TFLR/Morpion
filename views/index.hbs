@@ -14,11 +14,12 @@
 </head>
 
 <body>
-    {{#loggedIn}}
+    {{#if loggedIn}}
 
     <section>
         
         <div class="welcome-page">
+            
             <div class="backage">
                 <h2>Tic-Tac-Toe</h2>
                 <div class="bas">
@@ -27,7 +28,7 @@
                             Versus BOT
                            <img src="../images/menu/robot.svg" alt="robot">
                         </a>
-                        <a href="/game"> 
+                        <a href="/multiplayer"> 
                             Versus Players
                            <img src="../images/menu/players.svg" alt="robot">
                         </a>
@@ -35,13 +36,20 @@
                            Leaderboard
                            <img src="../images/menu/leaderboard.svg" alt="robot">
                         </a>
+                         <a href="/logout"> 
+                            logout
+                            <img src="../images/menu/logout.svg" alt="robot">
+                        </a>
                     </div>
+                    
+                       
+                    
                 </div>
             </div>
         </div>
     </section>
 
-    {{/loggedIn}}
+    {{else }}
     <section>
         
         <div class="welcome-page">
@@ -50,12 +58,12 @@
                 <div class="bas">
                     <div class="allbutton">
                         <a href="/auth/login"> 
-                            Versus BOT
-                           <img src="../images/menu/robot.svg" alt="robot">
+                            Login
+                           <img src="../images/menu/login.svg" alt="robot">
                         </a>
                         <a href="/auth/register"> 
-                            Versus Players
-                           <img src="../images/menu/players.svg" alt="robot">
+                            Register
+                           <img src="../images/menu/register.svg" alt="robot">
                         </a>
                        
                     </div>
@@ -63,7 +71,7 @@
             </div>
         </div>
     </section>
-    
+    {{/if}}
     
 
 </body>

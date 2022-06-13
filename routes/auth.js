@@ -1,27 +1,32 @@
 const express = require('express');
-const router = express.Router();
+const router = new express.Router();
 const authUtils = require('../utils/auth');
 const passport = require('passport');
+const flash = require('connect-flash');
 
+// --------------------------------------------------
 router.get('/login', (req, res, next) => {
-  
-    const messages = req.flash();
-    
-    res.render('login', { messages });
-})
-
-router.post('/login', passport.authenticate('local', 
-{ failureRedirect: '/auth/login', 
-failureFlash: 'Wrong username or password'}),
-(req, res, next) => {
-  const registrationParams = req.body;
-  console.log(registrationParams.username);
-  console.log(registrationParams.password);
+  if (req.isAuthenticated()) { 
     res.redirect('/');
+  }
+  const messages = req.flash();
+  res.render('login', { messages });
 });
+// --------------------------------------------------
+// Handle login request
+// --------------------------------------------------
+router.post('/login', passport.authenticate('local', 
+  { failureRedirect: '/auth/login', 
+    failureFlash: 'Wrong username or password'}), (req, res, next) => {
+  res.redirect('/');
+});
+// --------------------------------------------------
 
 
 router.get('/register', (req, res, next) => {
+  if (req.isAuthenticated()) { 
+    res.redirect('/');
+  }
   const messages = req.flash();
   
   res.render('register', { messages });
@@ -32,19 +37,20 @@ router.get('/register', (req, res, next) => {
   // Handle register request
   // --------------------------------------------------
   router.post('/register', (req, res, next) => {
-   
-    const registrationParams = req.body;
     
+    const registrationParams = req.body;
     const users = req.app.locals.users;
+    console.log('take2');
  
     const payload = {
-      username: registrationParams.nameof,
-      email: registrationParams.emailof,
-      password: authUtils.hashPassword(registrationParams.passwordof),
+      username: registrationParams.username,
+      email: registrationParams.email,
+      password: authUtils.hashPassword(registrationParams.password),
       victory: 0,
       loses: 0,
       draws: 0,
     };
+    console.log('take3');
 
    
   
@@ -52,6 +58,7 @@ router.get('/register', (req, res, next) => {
       if (err) {
         req.flash('error', 'User account already exists.');
       } else {
+        console.log('take4');
         req.flash('success', 'User account registered successfully.');
       }
   
