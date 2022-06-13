@@ -157,6 +157,12 @@ app.post('/api/register', async (req, res) => {
 var players = {},
   unmatched;
 
+  io.on('connection', (socket) => {
+  socket.on('chat message', (msg) => {
+    io.emit('chat message', msg);
+  });
+});
+
 io.sockets.on("connection", function (socket) {
   console.log("socket connected")
   socket.emit('connect', {
