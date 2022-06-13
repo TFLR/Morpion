@@ -37,7 +37,10 @@ body {
     font-family: 'Lexend Deca', sans-serif;
 }
 
-
+.table {
+    background-color: blanchedalmond;
+    
+}
 
 .form-control {
     border-radius: 2em;

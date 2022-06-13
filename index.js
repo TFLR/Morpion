@@ -1,7 +1,6 @@
 var createError = require('http-errors');
 var express = require('express')
 var app = express()
-app.use(express.static('public'))
 var path = require('path');
 const bodyParser = require("body-parser");
 const port = process.env.PORT || 5000
@@ -46,6 +45,7 @@ app.use(logger('dev'));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs')
 app.use(cookieParser());
+
 app.use(express.urlencoded({ extended: false }));
 hbs.registerPartials(path.join(__dirname, 'views/_partials'));
 
@@ -98,6 +98,10 @@ app.use('/', indexRouter);
 
 app.use('/auth', authRouter);
 
+app.get('/game', function (req, res) {
+  res.sendFile(__dirname + '/public/tic-tac-toe.html');
+})
+
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
@@ -112,6 +116,12 @@ app.use(function(err, req, res, next) {
 
 var players = {},
   unmatched;
+
+io.on('connection', (socket) => {
+    socket.on('chat message', (msg) => {
+      io.emit('chat message', msg);
+    });
+});
 
 io.sockets.on("connection", function (socket) {
   console.log("socket connected")

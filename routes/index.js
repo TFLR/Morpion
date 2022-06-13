@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-
 // Create custom homepage
 // --------------------------------------------------
 router.get('/', function(req, res, next) {
@@ -11,9 +10,9 @@ router.get('/', function(req, res, next) {
 });
 // --------------------------------------------------
 router.get('/multiplayer', (req, res, next) => {
-  if (!req.isAuthenticated()) { 
-    res.redirect('/auth/login');
-  }
+  // if (!req.isAuthenticated()) { 
+  //   res.redirect('/auth/login');
+  // }
 
   const users = req.app.locals.users;
 
@@ -32,5 +31,17 @@ router.get('/bot', (req, res, next) => {
 
     res.render('bot', { users });
     
+});
+module.exports = router;
+
+router.get('/leaderboard', (req, res, next) => {
+  if (!req.isAuthenticated()) { 
+    res.redirect('/auth/login');
+  }
+
+  const users = req.app.locals.users;
+
+  res.render('leaderboard', { users });
+  
 });
 module.exports = router;
