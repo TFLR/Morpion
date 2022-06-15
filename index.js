@@ -98,10 +98,6 @@ app.use('/', indexRouter);
 
 app.use('/auth', authRouter);
 
-app.get('/game', function (req, res) {
-  res.sendFile(__dirname + '/public/tic-tac-toe.html');
-})
-
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;

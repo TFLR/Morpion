@@ -10,9 +10,9 @@ router.get('/', function(req, res, next) {
 });
 // --------------------------------------------------
 router.get('/multiplayer', (req, res, next) => {
-  // if (!req.isAuthenticated()) { 
-  //   res.redirect('/auth/login');
-  // }
+  if (!req.isAuthenticated()) { 
+    res.redirect('/auth/login');
+  }
 
   const users = req.app.locals.users;
 
